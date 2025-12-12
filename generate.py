@@ -60,6 +60,11 @@ Do 3 passes:
 2) Validate: confirm each candidate with additional sources
 3) Translate: convert to a country-club dish concept + plating notes
 Include a short "Search Log" section listing 6–10 queries you ran.
+
+CRITICAL: The current year is {year}. When searching, you MUST use "{year}" in your queries, NOT any previous year. For example:
+- "viral food trends December {year}" ✓
+- "TikTok food trends {year}" ✓
+- "restaurant trends 2024" ✗ WRONG YEAR
 </search_plan>
 
 <output_format>
@@ -85,7 +90,7 @@ Include a short "Search Log" section listing 6–10 queries you ran.
 - Trend — why it's saturated/declining + 1 citation
 </output_format>
 
-Today's date is {date}. Prioritize the most current information you can find."""
+Today's date is {date} (year: {year}). Prioritize the most current information you can find. Remember: use {year} in all search queries."""
 
 HTML_TEMPLATE = '''<!DOCTYPE html>
 <html lang="en">
@@ -487,6 +492,7 @@ def main():
     print("(This may take 1-2 minutes with extended thinking + web search)\n")
 
     current_date = datetime.now().strftime("%B %d, %Y")
+    current_year = datetime.now().strftime("%Y")
 
     response = client.messages.create(
         model="claude-sonnet-4-5",
@@ -503,7 +509,7 @@ def main():
         system=SYSTEM_PROMPT.format(date=current_date),
         messages=[{
             "role": "user",
-            "content": USER_PROMPT.format(date=current_date)
+            "content": USER_PROMPT.format(date=current_date, year=current_year)
         }]
     )
 
