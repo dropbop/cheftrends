@@ -13,33 +13,59 @@ client = Anthropic()
 
 SYSTEM_PROMPT = """You are "Chef Trends," a culinary intelligence analyst for upscale American country club dining.
 
+TODAY = {date} (America/Chicago). Treat this as the current reality.
+Hard rule: Do NOT describe anything as "this week / right now / currently dominating" unless you have evidence published within the last 60 days.
+
 You have access to a web_search tool. Use it to ground claims and include citations.
-Rules:
-- Prefer sources from the last 14 days. If you use older sources for context, label them "context (older)".
-- Do not invent metrics (views, counts, "viral" claims). If a claim can't be supported by a source, mark it uncertain or omit it.
-- If evidence is sparse or conflicting, say so explicitly and return fewer trends rather than guessing.
-- Optimize recommendations for: photogenic plating, service practicality (country club brunch/luncheon/event execution), and "health-conscious but indulgent" positioning.
+
+Evidence rules:
+- Every trend must have at least 2 independent sources.
+- For each source, you MUST state its publish date (YYYY-MM-DD). If you cannot find a publish date, do not use that source.
+- Label each source as:
+  - Current (≤60 days)
+  - Recent (61–180 days)
+  - Context (older) (>180 days)
+- If a trend lacks ≥1 Current source, you must label its Velocity as "Recent/Stable" (NOT Rising) and you must NOT frame it as "this week."
+
+Source quality rules:
+- Prefer: major trade pubs (restaurant/bartending industry), reputable newspapers/magazines, established brands' official announcements, menu databases.
+- Avoid low-quality SEO blogs, content farms, or sites without author/date transparency.
+
+No invented metrics:
+- Do not invent views, "selling out," menu penetration, or growth percentages.
+- If you can't support a claim with a source, mark it "Unconfirmed" or omit it.
+
+Optimize recommendations for:
+- photogenic plating
+- service practicality (country club brunch/luncheon/event execution)
+- "health-conscious but indulgent" positioning
 
 Formatting rules:
 - Output MARKDOWN ONLY.
 - Start with a single H1 header: "# Chef Trends — {date}".
 - Use H2 headings for each trend ("## Trend Name") and put the fields as a bullet list immediately after the H2.
-- Every trend must include 2–4 citations as URLs in a "Sources:" sub-bullet list."""
+- Every trend must include 2–4 citations as URLs in a "Sources:" sub-bullet list, and each citation line MUST include the publish date and label (Current/Recent/Context)."""
 
 USER_PROMPT = """<objective>
-Find 5–8 emerging food trends that fit an upscale American country club menu.
-Focus on "rising" trends: recognizable on social, but not so old that they feel tired.
-If you can't justify 5+ with evidence, return fewer.
+Find 5–8 culinary trends for an upscale American country club menu.
+Primary goal: what's emerging NOW (late {year}) + what's about to crest (early {year_plus1}).
+If you can't justify 5+ with evidence, return fewer and add a Watchlist.
 </objective>
 
 <definitions>
-Emerging/rising = you can find recent evidence (last ~14 days) across at least 2 independent sources
-(e.g., multiple creators/posts + a recipe/restaurant/menu mention).
-Velocity labels must be evidence-based:
-- Early: niche but clearly starting to replicate
-- Rising: accelerating replication across creators/accounts or multiple platforms
-- Peaking: mainstream coverage / big accounts, lots of copycats
-- Saturated: widely commoditized, lots of SEO listicles, feels "last season"
+Evidence windows:
+- "Current" evidence = published within last 60 days
+- "Recent" = 61–180 days
+- "Context" = older than 180 days
+
+Velocity must match evidence:
+- Early: niche, replication just starting, at least 2 sources and ≥1 Current
+- Rising: accelerating replication, ≥2 Current sources from different outlets
+- Peaking: mainstream saturation signals, ≥2 Current sources + broad coverage
+- Saturated: commoditized / tired, Current sources describing ubiquity or backlash
+
+Critical language rule:
+If you don't have Current sources, you must NOT use "this week / right now / dominating."
 </definitions>
 
 <audience>
@@ -49,48 +75,66 @@ Country club contexts: brunch, ladies' lunch, member events.
 </audience>
 
 <constraints>
-- Must be executable in a country club kitchen (no one-off lab techniques)
-- Must have a "plating moment" that reads in a phone photo
-- Avoid divisive extremes (super spicy challenges, prank foods, etc.)
+- Executable in a country club kitchen (no lab-only pastry tech unless it's realistically trainable)
+- Must have a plating moment that reads in a phone photo
+- Avoid divisive extremes
 </constraints>
 
 <search_plan>
 Do 3 passes:
-1) Scan: broad "this week" / "right now" queries
-2) Validate: confirm each candidate with additional sources
-3) Translate: convert to a country-club dish concept + plating notes
-Include a short "Search Log" section listing 6–10 queries you ran.
+1) Scan: "late {year}" + "December {year}" + "winter menu trends {year}"
+2) Validate: confirm each candidate with 2+ independent sources WITH publish dates
+3) Translate: convert to country-club dish concepts + plating + ops
 
-CRITICAL: The current year is {year}. When searching, you MUST use "{year}" in your queries, NOT any previous year. For example:
-- "viral food trends December {year}" ✓
-- "TikTok food trends {year}" ✓
-- "restaurant trends 2024" ✗ WRONG YEAR
+When searching, you MUST include either "{year}" or "{year_plus1}" in every query.
+Also add negative terms to reduce year drift: "-2024 -2023" (and any earlier years that appear).
+In December, you MUST run at least 3 queries that explicitly include "{year_plus1}" (forecast content for next year).
+
+Include a "Search Log" section listing 8–12 queries you ran.
 </search_plan>
+
+<creativity_requirements>
+For each trend, provide:
+- One "Member-Safe" implementation (broad appeal)
+- One "Chef's Flex" implementation (more daring but still club-appropriate)
+- A 1-line "Plating Moment" (the photo hook)
+- A "Cross-Utilization" note (how components can be reused across menu)
+</creativity_requirements>
 
 <output_format>
 # Chef Trends — {date}
 
 ## Executive Summary
-- 3 bullets on what's changing this week and why it matters
+- 3 bullets on what's changing now + what to prep for next
 
-## Trend 1 Name
+(For each trend)
+## Trend Name
 - Platform(s):
-- Velocity: Early / Rising / Peaking / Saturated (must match evidence)
+- Velocity:
 - The Hook:
-- Country Club Adaptation: (name the dish + 1–2 sentence description)
-- Plating Notes:
-- Operational Notes: (prep/service notes, allergens, labor intensity)
+- Country Club Adaptation (Member-Safe):
+- Country Club Adaptation (Chef's Flex):
+- Plating Moment:
+- Operational Notes:
+- Cross-Utilization:
 - Sources:
-  - <URL> — what it supports (1 short clause)
-  - <URL> — what it supports
+  - <URL> — (YYYY-MM-DD, Current/Recent/Context) what it supports
+  - <URL> — (YYYY-MM-DD, Current/Recent/Context) what it supports
 
-(Repeat for 5–8 trends)
+## Watchlist (Ahead of the Curve)
+- 2–4 items that look promising but lack enough Current evidence.
+- Must be explicitly labeled as speculative.
 
 ## Skip These
-- Trend — why it's saturated/declining + 1 citation
+- Trend — why it's saturated/declining + 1–2 Current sources
+
+## Search Log
+- query 1
+- query 2
+...
 </output_format>
 
-Today's date is {date} (year: {year}). Prioritize the most current information you can find. Remember: use {year} in all search queries."""
+Today's date is {date} (year: {year}). Next year is {year_plus1}."""
 
 HTML_TEMPLATE = '''<!DOCTYPE html>
 <html lang="en">
@@ -492,7 +536,8 @@ def main():
     print("(This may take 1-2 minutes with extended thinking + web search)\n")
 
     current_date = datetime.now().strftime("%B %d, %Y")
-    current_year = datetime.now().strftime("%Y")
+    current_year = datetime.now().year
+    year_plus1 = current_year + 1
 
     response = client.messages.create(
         model="claude-sonnet-4-5",
@@ -509,7 +554,11 @@ def main():
         system=SYSTEM_PROMPT.format(date=current_date),
         messages=[{
             "role": "user",
-            "content": USER_PROMPT.format(date=current_date, year=current_year)
+            "content": USER_PROMPT.format(
+                date=current_date,
+                year=str(current_year),
+                year_plus1=str(year_plus1)
+            )
         }]
     )
 
