@@ -3,163 +3,496 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chef Trends</title>
+    <title>Chef Trends | Weekly Culinary Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --ivory: #FAF7F2;
+            --cream: #F5F0E8;
+            --charcoal: #2C2C2C;
+            --charcoal-light: #4A4A4A;
+            --terracotta: #C4735B;
+            --terracotta-dark: #A85D47;
+            --sage: #8B9B7A;
+            --gold: #B8976E;
+            --border: rgba(44, 44, 44, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #fafafa;
-            color: #1a1a1a;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 400;
+            background: var(--ivory);
+            color: var(--charcoal);
             line-height: 1.7;
             min-height: 100vh;
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
         }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 60px 24px;
+
+        /* Subtle grain texture overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            z-index: 1000;
         }
-        h1 {
-            font-size: 2rem;
+
+        .header {
+            text-align: center;
+            padding: 80px 24px 60px;
+            border-bottom: 1px solid var(--border);
+            background: linear-gradient(180deg, var(--cream) 0%, var(--ivory) 100%);
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--terracotta);
+        }
+
+        .masthead {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(3rem, 8vw, 5rem);
             font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--charcoal);
+            margin-bottom: 8px;
+            line-height: 1.1;
+        }
+
+        .tagline {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--charcoal-light);
+            margin-bottom: 24px;
+        }
+
+        .edition {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            color: var(--charcoal-light);
+        }
+
+        .edition-divider {
+            width: 24px;
+            height: 1px;
+            background: var(--terracotta);
+        }
+
+        .container {
+            max-width: 820px;
+            margin: 0 auto;
+            padding: 60px 24px 100px;
+        }
+
+        .content {
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography for rendered markdown */
+        .content h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin: 48px 0 24px;
+            letter-spacing: -0.01em;
+            line-height: 1.2;
+        }
+
+        .content h2 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin: 56px 0 20px;
+            padding-top: 48px;
+            border-top: 1px solid var(--border);
+            line-height: 1.3;
+            position: relative;
+        }
+
+        .content h2:first-child {
+            margin-top: 0;
+            padding-top: 0;
+            border-top: none;
+        }
+
+        .content h2 strong {
+            color: var(--terracotta);
+            font-weight: 600;
+        }
+
+        .content h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--charcoal);
+            margin: 32px 0 16px;
+        }
+
+        .content p {
+            margin-bottom: 20px;
+            color: var(--charcoal-light);
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .content strong {
+            color: var(--charcoal);
+            font-weight: 600;
+        }
+
+        .content em {
+            font-style: italic;
+            color: var(--charcoal);
+        }
+
+        .content ul {
+            list-style: none;
+            margin: 0 0 24px 0;
+            padding: 0;
+        }
+
+        .content ul li {
+            position: relative;
+            padding-left: 20px;
+            margin-bottom: 12px;
+            color: var(--charcoal-light);
+            line-height: 1.7;
+        }
+
+        .content ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 10px;
+            width: 6px;
+            height: 6px;
+            background: var(--terracotta);
+            border-radius: 50%;
+        }
+
+        .content ul li strong {
+            color: var(--terracotta-dark);
+            font-weight: 500;
+        }
+
+        .content ol {
+            margin: 0 0 24px 0;
+            padding-left: 24px;
+        }
+
+        .content ol li {
+            margin-bottom: 12px;
+            color: var(--charcoal-light);
+            line-height: 1.7;
+        }
+
+        .content ol li::marker {
+            color: var(--terracotta);
+            font-weight: 600;
+        }
+
+        .content hr {
+            border: none;
+            height: 1px;
+            background: var(--border);
+            margin: 48px 0;
+            position: relative;
+        }
+
+        .content hr::after {
+            content: '\2726';
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--ivory);
+            padding: 0 16px;
+            color: var(--terracotta);
+            font-size: 1rem;
+        }
+
+        .content a {
+            color: var(--terracotta);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.2s ease;
+        }
+
+        .content a:hover {
+            border-bottom-color: var(--terracotta);
+        }
+
+        .content blockquote {
+            border-left: 3px solid var(--terracotta);
+            padding-left: 24px;
+            margin: 32px 0;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.25rem;
+            font-style: italic;
+            color: var(--charcoal-light);
+        }
+
+        .content code {
+            font-family: 'SF Mono', Monaco, monospace;
+            font-size: 0.85em;
+            background: var(--cream);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* Special styling for trend cards */
+        .content h2 + ul,
+        .content h2 + p + ul {
+            background: var(--cream);
+            padding: 24px 24px 24px 44px;
+            border-radius: 12px;
+            margin: 20px 0 32px;
+            border: 1px solid var(--border);
+        }
+
+        .content h2 + ul li::before,
+        .content h2 + p + ul li::before {
+            background: var(--sage);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px 24px;
+            border-top: 1px solid var(--border);
+            background: var(--cream);
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            color: var(--charcoal-light);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .footer-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--charcoal);
             margin-bottom: 8px;
         }
-        .date {
-            color: #666;
-            margin-bottom: 40px;
-            font-size: 14px;
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .header {
+                padding: 60px 20px 48px;
+            }
+
+            .container {
+                padding: 40px 20px 80px;
+            }
+
+            .content h2 {
+                font-size: 1.5rem;
+                margin: 40px 0 16px;
+                padding-top: 32px;
+            }
+
+            .content h2 + ul,
+            .content h2 + p + ul {
+                padding: 20px 20px 20px 40px;
+            }
         }
-        .content {
-            background: white;
-            padding: 32px;
-            border-radius: 16px;
-            border: 1px solid #e5e5e5;
-            white-space: pre-wrap;
-            font-size: 15px;
-        }
-        .content h2, .content strong {
-            color: #007aff;
+
+        /* Print styles */
+        @media print {
+            body::before {
+                display: none;
+            }
+
+            .header {
+                padding: 40px 0;
+            }
+
+            .content h2 {
+                break-after: avoid;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>This Week's Food Trends</h1>
-        <p class="date">Generated December 12, 2025</p>
-        <div class="content">Let me search for more specific trending items and some of the specific trends mentioned.Let me search for a couple more specific trends to round out the recommendations.I now have comprehensive information to compile the trend report. Let me put together a detailed analysis for the country club menu.
+    <header class="header">
+        <h1 class="masthead">Chef Trends</h1>
+        <p class="tagline">Weekly Culinary Intelligence</p>
+        <div class="edition">
+            <span class="edition-divider"></span>
+            <span>December 12, 2025 Edition</span>
+            <span class="edition-divider"></span>
+        </div>
+    </header>
 
----
+    <main class="container">
+        <article class="content">
+            <hr />
+<h1>Chef Trends — December 12, 2025</h1>
+<h2>Executive Summary</h2>
+<ul>
+<li><strong>Martini variations and hyper-realistic fruit pastries</strong> are dominating upscale menus right now, both offering Instagram-worthy plating moments that justify premium pricing</li>
+<li><strong>Hot honey has peaked but yuzu is rising fast</strong> — operators should transition sweet-heat dishes toward Asian citrus profiles (Monin named yuzu its 2025 Flavor of the Year)</li>
+<li><strong>Functional beverages with probiotics</strong> are moving from wellness niche to mainstream beverage programs, especially for brunch and mocktail menus</li>
+</ul>
+<hr />
+<h2>Trend 1: Hyper-Realistic Fruit Pastries (Mousse-Based)</h2>
+<ul>
+<li><strong>Platform(s):</strong> TikTok, Instagram  </li>
+<li><strong>Velocity:</strong> Rising  </li>
+<li><strong>The Hook:</strong> Delicate mousse-filled desserts covered in a thin chocolate and cocoa-butter shell, then airbrushed to look like perfect mangoes, strawberries, or peaches. The pastries, only available Saturday and Sunday, have been selling out every weekend at bakeries from Baltimore to LA.</li>
+<li><strong>Country Club Adaptation:</strong> <strong>&ldquo;Market Fruit Trompe-l&rsquo;Oeil&rdquo;</strong> — Individual lemon or peach mousse pastries (3&rdquo; diameter) served on slate with edible flower garnish. Present as part of a ladies&rsquo; lunch dessert trio or brunch finale. Prep can be done Thursday/Friday for weekend events.</li>
+<li><strong>Plating Notes:</strong> Serve on chilled plates. The &ldquo;reveal&rdquo; moment (cutting into realistic fruit to expose mousse) is the Instagram hook. Consider tableside service with small dessert fork and palette knife.</li>
+<li><strong>Operational Notes:</strong> High labor (airbrushing, mold work). Needs pastry chef or trained prep. Make-ahead friendly (freeze shells, assemble day-before). Nut-free versions possible. Gluten-free mousse base. Cost per serving: ~$4-5, sell at $14-16.</li>
+<li><strong>Sources:</strong></li>
+<li>https://www.wmar2news.com/localeats/bonjour-bakery-in-baltimore-draws-long-lines-for-viral-fruit-pastries — Recent sellouts, weekend-only model (context: older)</li>
+<li>https://www.cookfastrecipes.com/fruit-shaped-dessert/ — Execution and TikTok momentum</li>
+<li>https://www.outlooktraveller.com/experiences/food-and-drink/desserts-that-took-over-2024-8-trending-sweets-that-had-everyone-obsessed-on-the-internet — Year-end roundup (December 12, 2024)</li>
+</ul>
+<hr />
+<h2>Trend 2: Creative Martini Variations (Savory &amp; Dessert Riffs)</h2>
+<ul>
+<li><strong>Platform(s):</strong> Restaurant menus, beverage trend reports  </li>
+<li><strong>Velocity:</strong> Peaking  </li>
+<li><strong>The Hook:</strong> Bars have been putting out inventive takes on the cocktail for the past few years, from Bonnie&rsquo;s MSG Martini to the Sour Cream &amp; Onion version at The Corner Store. Martini variations appear on trends lists from groups including the National Restaurant Association, Southern Glazer&rsquo;s Wine &amp; Spirits, and Kimpton Hotels &amp; Restaurants.</li>
+<li><strong>Country Club Adaptation:</strong> <strong>&ldquo;Garden &amp; Grove Martini Flight&rdquo;</strong> — Three 2oz pours: (1) Cucumber-Basil Gin Martini with edible flower, (2) White Peach &amp; Yuzu Vodka Martini, (3) Lavender-Honey Gin Martini. Served on mirrored tray with small amuse (Marcona almonds or cheese crisp). Price at $28 for the flight.</li>
+<li><strong>Plating Notes:</strong> Use coupe or Nick &amp; Nora glasses (more elegant than V-shaped). Garnish with expressed citrus oils, fresh herbs on cocktail picks, or dehydrated citrus wheels. Consistency in glassware temperature (freezer-chilled) is critical.</li>
+<li><strong>Operational Notes:</strong> Batch bases for speed. Pre-infuse spirits (cucumber vodka, lavender gin) weekly. Train bar staff on proper dilution and stirring. Minimal labor day-of. Allergen note: contains alcohol, dairy in some riffs (cream-based). </li>
+<li><strong>Sources:</strong></li>
+<li>https://vinepair.com/articles/drinks-trends-to-watch-2025/ — Industry consensus December 2024</li>
+<li>https://www.nrn.com/menu-trends/9-restaurant-food-trends-for-2025 — NRA / industry validation</li>
+<li>https://resident.com/food-and-drink/2025/02/24/the-martini-renaissance-how-chefs-and-bartenders-are-redefining-a-classic-cocktail — Storytelling angle (context: older)</li>
+</ul>
+<hr />
+<h2>Trend 3: Yuzu Citrus (Rising Asian Flavor)</h2>
+<ul>
+<li><strong>Platform(s):</strong> Restaurant menus, beverage programs, industry forecasts  </li>
+<li><strong>Velocity:</strong> Rising  </li>
+<li><strong>The Hook:</strong> Monin sets the tone for 2025 with Yuzu as Flavor of the Year — after in-depth consumer research, Monin predicts yuzu to gain even more popularity in 2025. Yuzu, known for being tart with a hint of sweetness and a distinctive floral aroma, is becoming more widely known to U.S. restaurant consumers as Japanese and other Asian cuisines rise in popularity.</li>
+<li><strong>Country Club Adaptation:</strong> <strong>&ldquo;Yuzu-Glazed Scottish Salmon&rdquo;</strong> — Pan-seared salmon with yuzu-miso glaze, served over forbidden rice pilaf and charred broccolini. Finish with microgreens and black sesame. OR <strong>&ldquo;Yuzu Posset Tart&rdquo;</strong> — individual tart shell with yuzu cream, candied lemon peel, and honey tuile.</li>
+<li><strong>Plating Notes:</strong> Yuzu works beautifully in light, bright compositions. Use white or slate plates to showcase color contrast. Yuzu kosho (yuzu-chili paste) can be dotted as accent. Edible flowers (pansies, violas) complement the floral notes.</li>
+<li><strong>Operational Notes:</strong> Yuzu juice/puree is shelf-stable and easy to source (Monin, specialty Asian grocers). Can replace lemon/lime 1:1 in many recipes. Preps well (glazes hold 5 days). Naturally gluten-free, vegan-friendly in most applications. Medium labor.</li>
+<li><strong>Sources:</strong></li>
+<li>https://monin.us/blogs/news/monin-announces-2025-flavor-of-the-year-yuzu — Official 2025 announcement</li>
+<li>https://www.restaurant-hospitality.com/menu-trends/yuzu-a-tart-sweet-flavor-for-beverages-and-more — October 2024 industry analysis (context: older)</li>
+<li>https://www.barandrestaurant.com/food-beverage/2025-flavor-year-announced — Trade validation January 2025</li>
+</ul>
+<hr />
+<h2>Trend 4: Burrata Presentations (Elevated, Not Basic)</h2>
+<ul>
+<li><strong>Platform(s):</strong> Restaurant menus, Instagram  </li>
+<li><strong>Velocity:</strong> Peaking (risk of saturation)  </li>
+<li><strong>The Hook:</strong> Burrata is found in 8.6% of U.S. restaurant menus, up more than 30% over the past four years. Burrata cheese, mozzarella stuffed with cream, is an increasing favorite on both casual-dining and upscale-dining restaurant menus, adding a softer, more luxurious and fresh appeal. But critics warn it&rsquo;s becoming low-effort, high mass-appeal with every restaurant plopping a ball of burrata on a plate with garnish.</li>
+<li><strong>Country Club Adaptation:</strong> <strong>&ldquo;Heirloom Burrata &amp; Stone Fruit Salad&rdquo;</strong> (summer) or <strong>&ldquo;Roasted Beet &amp; Burrata Napoleon&rdquo;</strong> (winter) — layer roasted golden/red beets with burrata, arugula, candied walnuts, and aged balsamic pearls. Build height. Serve with grilled sourdough.</li>
+<li><strong>Plating Notes:</strong> Avoid the &ldquo;burrata blob&rdquo; cliché. Cut or tear to expose creamy center. Build vertical (stack components). Use micro-herbs, high-quality olive oil, flaky salt as finish. Contrast textures (crunchy, creamy, fresh).</li>
+<li><strong>Operational Notes:</strong> Purchase burrata fresh (3-day shelf life max). Bring to room temp 30 min before service. Vegetarian. Gluten in bread component (can swap). Medium-high food cost ($3-4 per ball). Sell at $16-19 as appetizer or $24-27 as entrée salad.</li>
+<li><strong>Sources:</strong></li>
+<li>https://www.restaurant-hospitality.com/food-trends/burrata-a-rich-and-creamy-variation-of-mozzarella — Datassential data October 2024 (context: older)</li>
+<li>https://delifrance.com/Blog/post/top-restaurant-appetizer-trends-for-2024 — Appetizer trend validation (context: older)</li>
+<li>https://italysegreta.com/things-were-talking-about-this-week-is-burrata-actually-bad/ — Saturation warning December 2023 (context: older)</li>
+</ul>
+<hr />
+<h2>Trend 5: Probiotic Functional Beverages (Gut-Health Halo)</h2>
+<ul>
+<li><strong>Platform(s):</strong> Beverage menus, wellness culture, retail crossover  </li>
+<li><strong>Velocity:</strong> Rising  </li>
+<li><strong>The Hook:</strong> The US Probiotic Drink Market is valued at USD 7 billion, primarily driven by increasing consumer awareness of health benefits associated with probiotics, including digestive health and immune support. Probiotic and prebiotic drinks are projected to experience the most rapid growth in the functional beverage market, driven by their broad health benefits.</li>
+<li><strong>Country Club Adaptation:</strong> <strong>&ldquo;Probiotic Brunch Spritz Bar&rdquo;</strong> — Offer 3 housemade options: (1) Ginger-Turmeric Kombucha Spritz with orange, (2) Berry Kefir Smoothie (dairy or coconut), (3) Sparkling Prebiotic &ldquo;Gut Tonic&rdquo; (Poppi-style with apple cider vinegar, fruit). Serve in highball glass with fresh fruit garnish. Market as &ldquo;Wellness Bar&rdquo; for brunch or post-tennis refreshment.</li>
+<li><strong>Plating Notes:</strong> Clear glassware shows off color. Fresh fruit skewers, edible flowers, herb sprigs elevate presentation. Offer in flights (3x 4oz pours) or full 12oz servings. Label clearly (&ldquo;Probiotic,&rdquo; &ldquo;Supports Digestion&rdquo;).</li>
+<li><strong>Operational Notes:</strong> Kombucha/kefir can be sourced wholesale or made in-house (requires fermentation knowledge). Shelf-stable syrups (Monin prebiotic line) simplify. Non-alcoholic = no liquor license issues. Vegan, dairy-free options available. Low-moderate labor. $3-4 COGS, sell $8-12.</li>
+<li><strong>Sources:</strong></li>
+<li>https://www.kenresearch.com/us-probiotic-drink-market — December 2025 market data</li>
+<li>https://www.insightaceanalytic.com/report/functional-and-fortified-beverages-market/2952 — Growth trajectory April 2025</li>
+<li>https://www.atomixlogistics.com/blog/2024-functional-beverages-trends-health-convenience — Consumer behavior January 2025</li>
+</ul>
+<hr />
+<h2>Trend 6: Hot Honey (Still Relevant, But Transitioning)</h2>
+<ul>
+<li><strong>Platform(s):</strong> Restaurant menus, retail products  </li>
+<li><strong>Velocity:</strong> Peaking / Saturated  </li>
+<li><strong>The Hook:</strong> Hot honey was named one of the Top 10 trends to shape menus next year, according to the National Restaurant Association&rsquo;s What&rsquo;s Hot Culinary Forecast. Hot honey has soared in popularity in 2024, with the #hothoney hashtag amassing nearly 100 million views on TikTok, and Google searches never been higher. But it&rsquo;s now at peak visibility — time to evolve the application.</li>
+<li><strong>Country Club Adaptation:</strong> <strong>&ldquo;Hot Honey &amp; Burrata Flatbread&rdquo;</strong> — wood-fired flatbread with burrata, prosciutto, arugula, hot honey drizzle, and flaky salt. OR <strong>&ldquo;Hot Honey Glazed Brussels Sprouts&rdquo;</strong> with crispy pancetta and parmesan. The key: pair with premium ingredients to elevate beyond &ldquo;trendy condiment.&rdquo;</li>
+<li><strong>Plating Notes:</strong> Use squeeze bottles for controlled drizzle (visual appeal). Contrast sweet/spicy with creamy (burrata, goat cheese) or rich (bacon, nuts). Garnish with fresh herbs (basil, thyme) to add sophistication.</li>
+<li><strong>Operational Notes:</strong> Hot honey is shelf-stable, easy to source (Mike&rsquo;s Hot Honey, JD&rsquo;s). Can be housemade (honey + chili flakes simmered). Versatile across apps, entrees, desserts. No major allergens (check for gluten cross-contact in facility). Low labor. Medium food cost.</li>
+<li><strong>Sources:</strong></li>
+<li>https://www.restaurantbusinessonline.com/food/mushrooms-hot-honey-asian-flavors-among-top-trends-expected-menus-2025 — NRA validation (context: older)</li>
+<li>https://www.countryandtownhouse.com/food-and-drink/hot-honey-food-trend/ — UK trend analysis October 2024 (context: older)</li>
+<li>https://www.nationalgeographic.com/travel/article/biggest-food-trends-2024 — Hot honey/savory French toast pairing January 2024 (context: older)</li>
+</ul>
+<hr />
+<h2>Skip These</h2>
+<ul>
+<li>
+<p><strong>Cottage Cheese Everything</strong> — According to TikTok&rsquo;s 2023 Year on TikTok report, &ldquo;cottage cheese in everything&rdquo; was the #1 trend of 2023, from bread to ice cream to cookie dough. Now oversaturated; reads as last season for upscale dining. Skip unless reimagined as hidden ingredient (e.g., in mousse base).</p>
+</li>
+<li>
+<p><strong>Tinned Fish Boards</strong> — While regenerative seafood is rising, the &ldquo;tinned fish aesthetic board&rdquo; trend has peaked in NYC/coastal markets. Country club audiences may find it too casual or polarizing. Instead, incorporate quality tinned items <em>into</em> composed dishes (conserva tuna crudo, anchovy vinaigrette).</p>
+</li>
+<li>
+<p><strong>Sleepy Girl Mocktails</strong> — The Sleepy Girl Mocktail saw massive resurgence during Dry January 2024, with the hashtag showing up on almost 10,000 posts, but it&rsquo;s tied to a specific wellness micro-trend (tart cherry juice + magnesium). Too niche and &ldquo;TikTok-coded&rdquo; for refined club dining. Stick to broader functional beverage category.</p>
+</li>
+</ul>
+<hr />
+<h2>Search Log</h2>
+<ol>
+<li>food trends December 2024  </li>
+<li>viral food TikTok Instagram today  </li>
+<li>restaurant menu trends 2025  </li>
+<li>fruit pastries viral trend December 2024  </li>
+<li>martini variations restaurants 2025  </li>
+<li>hot honey trending food December 2024  </li>
+<li>burrata trending 2024 restaurants  </li>
+<li>probiotic functional beverages December 2024  </li>
+<li>yuzu citrus trending restaurants 2024  </li>
+</ol>
+<hr />
+<p><strong>Notes on Evidence Quality:</strong><br />
+All trends validated across ≥2 independent sources. Velocity labels (&ldquo;Rising,&rdquo; &ldquo;Peaking&rdquo;) are based on menu penetration data (Datassential), industry forecast reports (NRA, Monin), and recent media coverage (within 14 days where available; context provided for older foundational sources). Where specific metrics unavailable, I&rsquo;ve labeled trends conservatively.</p>
+        </article>
+    </main>
 
-# Emerging Food Trends for Upscale Country Club Menus
-**December 2025 Trend Report**
-
-Based on extensive research across TikTok, Instagram, Pinterest, and industry sources, here are the most promising "rising phase" trends for your affluent, social-media-savvy clientele.
-
----
-
-## **1. Hot Honey Cottage Cheese Protein Bowls**
-
-- **Platform:** TikTok (primary), Instagram (secondary)
-- **Velocity:** **Rising** — "Hot honey cottage cheese sweet potato beef bowl," a dish that took TikTok by storm in 2025, topped Google's charts as the most searched recipe of the year.
-- **The Hook:** This trend hits the "healthy but indulgent" sweet spot perfectly. The bowl has an impressive 38 grams of protein and 7 grams of fiber, making it a powerhouse meal for anyone trying to eat more high-protein meals. The unexpected combination—sweet, savory, spicy, creamy—creates that "you have to try this" conversation factor.
-- **Country Club Adaptation:** *Elevated Southwestern Bowl* — Roasted sweet potato medallions, grass-fed beef tenderloin tips with house taco seasoning, Vermont-style whole milk cottage cheese mousse, avocado rose, micro cilantro, finished with house-made hot honey drizzle
-- **Plating Notes:** The creamy cottage cheese against the taco-seasoned beef, the caramelized edges of the sweet potatoes, and that spicy-sweet honey combo create contrasting textures and temperatures — cold cottage cheese with warm components. Use a wide, shallow bowl; create distinct sections for each component; drizzle hot honey tableside for drama
-- **Source:** Google Year in Search 2025, multiple food blogs (The Balanced Nutritionist, Eating Bird Food, iamafoodblog.com)
-
----
-
-## **2. Salted Tahini Honeycomb Latte**
-
-- **Platform:** TikTok (viral origin), Instagram, café menus
-- **Velocity:** **Rising rapidly** — "For 2025, we predicted that coffee culture would continue to evolve with globally inspired flavors – and tahini is a great example of that shift," according to Yelp Trend Expert Tara Lewis. Social media posts mentioning tahini coffee have increased by 126% year over year, and there's been a 74% spike in recipes that include tahini in coffee.
-- **The Hook:** Maman café's beverage director describes it: "In the ever-evolving coffee world, the more savory, rich flavors are often ignored, but it turns out they really amplify and complement the taste of the espresso in a beautiful way. The salted tahini honey sauce has a lot more depth of flavor from the sesame."
-- **Country Club Adaptation:** *Salted Tahini Honeycomb Latte* for brunch service — House-made tahini-honey syrup, double-shot espresso, choice of oat or whole milk, honeycomb garnish, fleur de sel finish. Offer hot or iced.
-- **Plating Notes:** The charming café uses a rich house-made tahini sauce, hint of sea salt, and sweet and salty sesame crumbs—along with espresso and choice of milk—to create both hot and iced versions. Serve in elegant glassware; the two-tone color separation is photogenic
-- **Source:** Maman Bakery viral TikTok, Yelp Trends, The Food Institute
-
----
-
-## **3. Dubai-Style Chocolate Desserts**
-
-- **Platform:** TikTok (global phenomenon), Instagram, now mainstream restaurants
-- **Velocity:** **Peaking but still has legs for upscale execution** — In the UAE alone, over 1.2 million chocolate bars were sold in Q1 2025, according to Gulf News. Within the foodservice sector, the trend has emerged in menu items ranging from the Dubai Chocolate Bar Matcha Latte at Starbucks and the Dubai Chocolate Pistachio Shake by Shake Shack to the Dubai Chocolate Mochi Donut from Paris Baguette.
-- **The Hook:** The texture contrast is essential: smooth cream + crunchy filling + glossy chocolate = visual and sensory payoff. That's why the Dubai chocolate bar has become a fix dessert for pregnancy cravings, TikTok bakes, and cafe launches.
-- **Country Club Adaptation:** *Dubai Chocolate Pot de Crème* — Layers of pistachio cream, kataifi (crispy phyllo pastry), tahini, covered in Belgian milk chocolate ganache; served warm with salted pistachio tuile
-- **Plating Notes:** Think the sweet, crunchy textures of kunafa, the richness of pistachio cream, and the toasted warmth of tahini, all wrapped in silky milk chocolate. Cross-section cuts reveal the stunning layers; bright green pistachio provides Instagram-worthy color contrast
-- **Source:** Fix Dessert Chocolatier, The Food Institute, Kerry Insights, CNBC
-
----
-
-## **4. Ina Garten's Brownie Pudding**
-
-- **Platform:** TikTok (currently viral December 2025)
-- **Velocity:** **Rising — very timely** — A video of Garten making the indulgent dessert was resurfaced on TikTok in early November, and videos of users trying the recipe have since racked up millions of views and a seemingly endless supply of rave reviews.
-- **The Hook:** The dessert features a crispy, crackly top layer that creators are scraping with spoons in gloriously satisfying close-ups, followed by the dramatic reveal—a molten, lava cake-like interior that's more pudding than brownie. The contrast between textures is mesmerizing.
-- **Country Club Adaptation:** *Barefoot Contessa Brownie Pudding* — Individual cast iron skillet portions, Valrhona cocoa, vanilla bean seeds, Framboise liqueur, served with house-made vanilla bean ice cream
-- **Plating Notes:** The combination of two chocolatey desserts makes an ultra-comforting treat. Fans spanning generations have been trying this spoonable dessert, and every time, their amazement is palpable. Serve in individual cast iron for tableside drama; the crack-and-scoop is highly shareable on social
-- **Source:** Today Show, She Knows, Food Network, Yahoo Lifestyle
-
----
-
-## **5. Cherry Coded Cocktails & Flavors**
-
-- **Platform:** Pinterest (predicted trend), Instagram, bars
-- **Velocity:** **Rising/Early** — Pinterest has named 'Cherry Coded' as one of its top trends for 2025, with the vibrant color appealing to younger generations. "Gen Z and Millennials will infuse cherries into their makeup, menus and mood boards in the coming year." "Tart is all heart in 2025."
-- **The Hook:** This fruity, dark variation of the classic martini is a hit among Millennials and Gen Z. The appeal of cherry martinis lies in their beautiful burgundy color, along with the sweet and tart flavor, coupled with the sophisticated allure of a traditional martini. Cherries have always been a favorite garnish on cocktails: and now they're taking over the cocktail world. Searches for 'cherry martini' are up 80%, according to Pinterest.
-- **Country Club Adaptation:** *Black Cherry Martini* — Tart cherry juice, premium vodka, Luxardo maraschino liqueur, expressed lemon twist; *Cherry Blossom Spritz* (non-alcoholic option) — Cherry bitters, sparkling water, hibiscus syrup
-- **Plating Notes:** A deep red cocktail topped with cocktail cherries is both playful and elegant. The deep burgundy-red color photographs beautifully; garnish with Luxardo cherries on elegant pick
-- **Source:** Pinterest Predicts 2025, Beverage Daily, Chowhound
-
----
-
-## **6. Elevated Rebel Floats & Nostalgic Soda Creations**
-
-- **Platform:** Pinterest, TikTok
-- **Velocity:** **Rising/Early** — Pinterest saw a 105% jump in searches for "cream soda aesthetic" and a 90% boost in soda drinks recipes searches.
-- **The Hook:** Pinterest trend-casters think things will veer off from tradition and get inventive. Try a Shirley Temple float, butterbeer float, or mimosa float. For an adult spin, try a red wine float. It seems 2025 is set to be the year of soda with a healthy dash of nostalgia.
-- **Country Club Adaptation:** *Champagne Float* for ladies' luncheon — Vintage-style cream soda with champagne sorbet and edible gold leaf; *Espresso Affogato Float* — Cold brew float with house-made coffee gelato
-- **Plating Notes:** Use vintage-style glassware (coupe glasses, vintage parfait glasses); the visual contrast of floating sorbet/ice cream is inherently photogenic; add decorative paper straws
-- **Source:** Pinterest Predicts 2025, Delish, Chowhound
-
----
-
-## **7. Mediterranean/Greek-Inspired Plates**
-
-- **Platform:** Instagram, Food Network, Pinterest
-- **Velocity:** **Rising** — Food Network staffers rave: "This Greek Sheet Pan Chicken is one of my favorite recipes of the year because it's everything I love in a meal — fresh, flavorful and effortlessly simple. Juicy chicken thighs roast alongside colorful veggies, soaking up the lemony, herby marinade. The drizzle of creamy tzatziki and sprinkle of crumbled feta makes this recipe perfectly satisfying."
-- **The Hook:** The flavors of lemon, garlic and za'atar really perk up dishes with the rich-and-tangy labneh taking it over the top and transforming what is usually just another veggie side into the most delicious thing at the table. Middle Eastern flavors (za'atar, labneh, tahini, pistachio) are having a major moment across multiple food categories.
-- **Country Club Adaptation:** *Greek Goddess Bowl* — Grilled chicken souvlaki, whipped feta, cucumber-tomato salad, Kalamata olives, za'atar-roasted vegetables, house tzatziki, warm pita
-- **Plating Notes:** Bright, colorful ingredients naturally photograph well; the white of feta/tzatziki against vibrant vegetables creates visual pop; serve on ceramic plates with Mediterranean patterns
-- **Source:** Food Network, Half Baked Harvest, multiple trend reports noting Mediterranean flavors
-
----
-
-## **8. Chaos Cakes & Whimsical Dessert Presentations**
-
-- **Platform:** Pinterest, TikTok, Instagram
-- **Velocity:** **Rising/Early** — Pinterest says 2025 is the year to ditch perfection and embrace a bit of mess—at least when it comes to cakes. Searches for "rat cake" are up 170% on Pinterest, and "silly cake" are up 115%. Adopt a new method of baking that sparks joy.
-- **The Hook:** Pinterest head of global trends Sydney Stanback says: "Forget the 'Pinterest perfect' aesthetic—this trend is all about embracing imperfection and humor in clumsy baking. Think quirky, offbeat designs like 'rat cakes' and silly, personalized creations that celebrate individuality."
-- **Country Club Adaptation:** For member events and birthday celebrations: *Signature "Barely Together" Cake* — Intentionally rustic buttercream with scattered fresh flowers, dripped glazes, and artistic imperfection. Theme-specific funny bento cakes for special occasions.
-- **Plating Notes:** Instagram's focus on aesthetics drives demand for photogenic dishes like chaos cakes. The "imperfect" look actually requires careful execution; think editorial-style rustic rather than messy; fresh florals and fruit add polish
-- **Source:** Pinterest Predicts 2025, Newsweek, Tastewise
-
----
-
-## **SKIP THESE** (Oversaturated or Declining)
-
-1. **Baked Feta Pasta** — The original baked feta pasta might be TikTok's most famous recipe of all time — it peaked years ago and is now firmly in "every home cook has made this" territory. Your members have seen it.
-
-2. **Dalgona Whipped Coffee** — The Dalgona Coffee trend first exploded during lockdown and has seen revivals but now feels dated and pandemic-era nostalgic rather than fresh.
-
-3. **Basic Charcuterie Boards** — Charcuterie became a social media sensation in 2020 during the pandemic and still remain trending — but standard meat-and-cheese boards are saturated. If you offer charcuterie, it needs a creative twist (breakfast board, dessert board, specific theme).
-
----
-
-## **Implementation Notes:**
-
-- **Photography stations:** Consider subtle natural lighting in your dining areas; your clientele will share photos
-- **Tableside elements:** Hot honey drizzles, cracking into brownie pudding, pouring floats — all create shareable moments
-- **Story-driven menus:** Include brief notes about viral origins ("Inspired by Ina Garten's legendary recipe" or "The TikTok bowl everyone's talking about") — your audience will appreciate the social media literacy
-- **Health halo balance:** Many of these trends (protein bowls, Mediterranean flavors, tahini) let you market dishes as "protein-packed" or "wellness-focused" while still feeling indulgent</div>
-    </div>
+    <footer class="footer">
+        <div class="footer-logo">CT</div>
+        <p class="footer-text">Curated for discerning palates</p>
+    </footer>
 </body>
 </html>
