@@ -1,0 +1,14 @@
+# Chef Trends
+
+Weekly food trend reports for country club menus.
+
+## Run it
+
+```bash
+cd /mnt/c/Users/Jack/documents/github/cheftrends
+source venv/bin/activate
+python generate.py
+git add docs/index.html && git commit -m "Update trends" && git push
+```
+
+View at: https://dropbop.github.io/cheftrends/
